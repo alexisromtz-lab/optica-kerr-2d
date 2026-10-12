@@ -124,3 +124,33 @@ Todo sumidero se restringe a `~/optica-kerr-2d/data/`. Los **8** sitios de I/O d
 ## 10. Sello del cierre (medido fuera, no impreso aquí)
 
 Una identidad impresa **dentro** de la pieza describe su versión **anterior** ⇒ el sha16, las líneas y las cabezas de esta pieza se miden **en la terminal** y se imprimen en el cierre del ciclo, no aquí.
+
+## 11. ERRATA (declarada, no parcheada)
+
+T_UTC_ERRATA = 2026-10-12T07:15:27Z
+
+Corrección **registrada como apéndice**, no parcheada en el cuerpo: la pieza vieja no se edita, recibe apéndices.
+
+**11.a — Cuatro literales con precisión truncada** (cifra impresa sin el dígito que el comando da). Medidos con `python3 -B` / numpy sobre el mismo objeto ($k_0 = 2\pi$, $w_0 = 5$, $\lambda = 1$):
+
+| casa | literal impreso | valor medido | comando |
+|---|---|---|---|
+| §3, §5 y P3 | $0.7117639$ | **$0.7117625$** | `sqrt(20)/(2*pi)` |
+| §3 | $2.0264236\times10^{-3}$ | **$2.0264237\times10^{-3}$** | `2/(10*pi)**2` |
+| §4 | $4.5344985$ | **$4.5344984$** | `pi*w0/(2*sqrt(3))` |
+| §4 | $5.375407$ (y su razón $1.18545$) | **$5.375408$** | `sqrt(pi**2*w0**2/12 + (2*zR)**2/(3*k0**2*w0**2))` |
+
+**Ningún veredicto cambia:** el margen del §5 queda en $2.0264237\times10^{-2}$ (×49.348) y $w_0^{\min} = 0.7117625\,\lambda$ es **más** holgado bajo $w_0 = 5\lambda$, no menos.
+
+**11.b — La ley del §4 quedó VERIFICADA, y se declara hasta dónde.** Propagador paraxial por FFT independiente (numpy, $N = 2^{20}$, $dy = 0.01$, 5 puntos por perfil):
+
+- sech contra su ley de segundo momento: desviación máxima **$2.220\times10^{-16}$**;
+- gaussiano contra Rayleigh: desviación máxima **$2.220\times10^{-16}$**.
+
+⇒ **P1a y P1b caen DENTRO del umbral sellado (2 %) con 14 órdenes de margen — pero esto mide la capa ANALÍTICA, no el metro.** El FDTD todavía no existe: el control dice que la **ley está bien escrita**, no que `paso()` la reproduzca. La verificación del metro sigue siendo P1a/P1b sobre FDTD.
+
+**11.c — El coeficiente del gradiente, con su control.** $\int|\partial_yE_0|^2/\int|E_0|^2 = 1/(3w_0^2)$: medido numéricamente $3.377366\times10^{-4}$ contra analítico $3.377373\times10^{-4}$ (difieren en el 6º dígito por el gradiente discreto a $dy = 0.01$; el literal del §4, $3.3774\times10^{-4}$, es el analítico).
+
+**11.d — Una cifra, dos unidades declaradas.** El recuento del signo monetario en esta pieza: **240 ocurrencias** (carácter, `str.count`) vs **39 líneas** (`grep -c` cuenta líneas, no ocurrencias). Ninguna es falsa; viajan con su unidad.
+
+**11.e — La cifra de esta pieza expira al escribir este apéndice.** 126 líneas · 10 241 B · sha16 $d9772bc6697b8939$ era verdad **antes** de escribir §11; el cierre imprime el par nuevo.
