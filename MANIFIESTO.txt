@@ -1,0 +1,164 @@
+# MANIFIESTO DE ARTEFACTOS Y CONSTANTES: OPTICA KERR 2D
+
+T_UTC_MANIFIESTO = 2026-10-12T17:31:13Z
+
+UNIVERSO DECLARADO: el arbol ~/optica-kerr-2d (pieza nueva, rama main) + el blob
+base CONGELADO sfqed-paper/sim/maxwell2d.py (sha16 1db75ea7b0b8cba4, blob git
+b3fc082245cfc5c33b3e275f966cfb16b04aa2e2, 715 l, 30 759 B, HEAD f213af6, limpio)
++ el pre-registro sellado PREREGISTRO_SOLITON_ESPACIAL_KERR_20261012.md (blob
+45fa6e96b707bd5c780cb3b9e160ac94a3be2a91, 156 l, 12 634 B, sha16 f9c10ec5594811df)
++ el commit de siembra de semillas vacias 68e317ed79a10e86d2b6ded96f1fef8ebad72fd6.
+MOTOR = git hash-object, shasum -a 256, python3 -B (numpy). UNIDAD = linea / byte
+/ blob / celda. VENTANA = el reloj UTC de cada linea T_UTC_*.
+
+REGLA DE LECTURA: toda cifra de este documento viene con el COMANDO que la
+respaldo. Cifra sin comando = rotulo, no medida.
+
+REGLA DE IDENTIDAD PROPRIA (§10 del pre-registro, aplicada aqui): una identidad
+impresa DENTRO de una pieza describe su version ANTERIOR. Por eso este manifiesto
+NO imprime su propio blob ni el de los otros dos artefactos: los mide el gate de
+cierre, en la terminal, y los imprime en el reporte del ciclo.
+
+## 0. Los tres artefactos y que hace cada uno
+
+| artefacto | papel | instrumento | produce |
+|---|---|---|---|
+| MANIFIESTO.txt (este) | fuente de verdad declarativa: catalogo de constantes, namespace de I/O, umbrales, y lo que FALTA | ninguno (es prosa medida) | nada en disco |
+| nulo_lineal.py | P1a + P1b: el nulo DIFRACTIVO LINEAL (chi3 = 0) medido por segundo momento | A: espectro angular paraxial por FFT (capa analitica); B: Yee 2D TE sobre la malla sellada (EL METRO) | data/nulo_lineal_<perfil>_<instr>.json |
+| propagador_2d_te.py | el motor: Maxwell 2D3V con el TERMINO CONSTITUTIVO de Kerr local en el avance de campo, mas la guarda del modo de fallo | Yee 2D3V (portado del blob congelado) | data/*.json |
+
+Cadena de commits (la mide el cierre, no este archivo):
+ce140ce (semilla del pre-registro) -> 69f0a32 (pre-registro) -> fa93b4b (errata
+§11) -> 68e317e (siembra de las TRES semillas vacias: MANIFIESTO.txt,
+nulo_lineal.py, propagador_2d_te.py, todas con blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391).
+
+## 1. Lo que se PORTA y lo que se ESCRIBE
+
+El motor NO se reescribe de cero. `propagador_2d_te.py` se ensambla asi:
+
+- BYTE-IDENTICO al blob b3fc082245cfc5c33b3e275f966cfb16b04aa2e2 (cuatro
+  ganchos de derivadas y dos auxiliares, sin un caracter de diferencia):
+  `ddx(F)`, `ddy(F)`, `ddx_f(F)`, `ddy_f(F)`, `campos_vacios()`,
+  `mascara_esponja()`. Su identidad se comprueba con un `diff` de la rebanada
+  contra el blob base, no leyendo el mensaje de exito del ensamblador.
+- PORTADO CON CAMBIOS DECLARADOS (el objeto ya no es el de la base): `paso()`
+  gana el termino constitutivo de Kerr y la guarda del §5; `energia()` gana el
+  termino de Kerr; `envolvente()`, `perfiles()`, `inyectar()`, `correr()`,
+  `control_energia()`, `control_cfl()` y `main()` se adaptan a la geometria
+  (1+1)D y a las constantes del §7.
+- NO se porta: `serie()`, `pendiente()`, `escribir_csv()`, `terminos_de()` de
+  la serie 1/N, `invariante_a()`, `bloque()`, `imprimir()` — pertenecen al
+  objeto Schwinger de la base (N haces convergentes), no a este.
+
+Los 8 sitios de I/O del blob base (las cuatro escrituras `write_text`, cada una
+partida en dos lineas: 452-453, 492-493, 628-629, 665-666) se reescriben a la
+raiz `./data/` (§9). `sfqed-paper/sim/data/` NO se escribe desde aqui.
+
+## 2. Catalogo de constantes (medido, con su comando)
+
+Unidades naturales declaradas por el §3: c = 1, lambda = 1, omega = k0 = 2 pi,
+eps0 = mu0 = 1. Con esos valores las constantes SI no entran en ninguna ecuacion.
+
+| constante | valor medido | comando que lo respalda |
+|---|---|---|
+| k0 | 6.283185307179586 | `2*pi` |
+| w0 | 5.0 | eleccion sellada §3 |
+| z_R (Rayleigh) | 78.53981633974483 | `pi*w0**2/lambda` |
+| 2 z_R (ventana x) | 157.07963267948966 | `2*z_R` |
+| E0 | 0.045015815807855304 | `sqrt(2/(k0*w0)**2)` |
+| chi3 | 1.0 | eleccion §3 |
+| Delta eps_NL = chi3 E0^2 | 0.0020264236728467556 | `2/(k0*w0)**2` |
+| w0 minimo de la cota §5 | 0.7117625434171772 | `sqrt(20)/k0` |
+| margen bajo la cota | 49.34802200544679 | `0.1/Delta_eps_NL` |
+| sigma_y(0) sech | 4.534498410585544 | `pi*w0/(2*sqrt(3))` |
+| coef. del gradiente 1/(3 k0^2 w0^2) | 0.0003377372788077926 | `1/(3*k0**2*w0**2)` |
+| sigma_y(2 z_R) sech | 5.375407814197557 | `sqrt(sigma0**2 + coef*(2*zR)**2)` |
+| razon sigma_y(2z_R)/sigma_y(0) | 1.1854470610572836 | cociente de los dos anteriores |
+| sigma_y(0) gaussiano | 2.5 | `w0/2` |
+| z_R^sigma gaussiano | 78.53981633974483 | `k0*w0**2/2` (= 25 pi) |
+| dx = dy | 0.05 | `lambda/20` (§7, ELEGIDA) |
+| N_x, N_y | 3262, 2000 | `ceil(L_x/dx)`, `L_y/dy` |
+| L_x, L_y | 163.07963267948966, 100.0 | `2*z_R+6`, `20*w0` |
+| dt | 0.02474873734152916 | `CFL_2D*dx/(c*sqrt(2))` |
+| omega dt | 0.1555009028355428 | `k0*dt` |
+| pasos de transito | 6590 | `ceil(L_x/dt)` (§7) |
+| pasos con asentamiento | 6994 | `6590 + round(10*T/dt)`, T = 1 |
+| esponja, alfa | 60 celdas, 0.10 | heredadas de la base |
+| columna fuente, eje | 60, 1000 | `ESPONJA_CELDAS`, `N_y//2` |
+
+Cuadratura exacta en malla (usada por el instrumento B del nulo):
+`sin(omega dt) = 0.1548749776804971` y `2 sin(omega dt)/k0 = 0.049298236518196155`.
+
+## 3. Namespace de I/O (§9)
+
+- TODO sumidero de esta pieza: `~/optica-kerr-2d/data/`. Los dos scripts la
+  crean si no existe (`mkdir(parents=True, exist_ok=True)`).
+- `sfqed-paper/` es SOLO LECTURA: de ahi se copia el blob y de ahi se lee
+  `sim/params.py` como casa de los valores SI. No se edita ni
+  `sim/maxwell2d.py` ni `sim/maxwell2d_nl.py`.
+- Los archivos de salida llevan el perfil y el instrumento en el nombre, para
+  que dos corridas no se pisen: `nulo_lineal_<perfil>_<instr>.json`.
+
+## 4. Umbrales y criterios sellados (§4, §5, §8) — NO se mueven despues de ver salida
+
+| id | criterio | umbral | casa |
+|---|---|---|---|
+| P1a | el nulo GAUSSIANO cierra contra Rayleigh sigma_y(x) = sigma_y(0) sqrt(1+(x/z_R^sigma)^2) | 2 % | §4, §8 |
+| P1b | el nulo SECH cierra contra la ley de segundo momento sigma_y^2(x) = sigma_y^2(0) + x^2/(3 k0^2 w0^2) | 2 % | §4, §8 |
+| P2 | con chi3 y E0 del §3 el objeto NO se ensancha mas de 3 % en x en [0, 2 z_R] | 3 % | §8 |
+| P3 | en el borde de la cota (w0 = 0.7117625434171772) el esquema NO explota | control_energia y control_cfl OK | §5, §8 |
+| P4 | dos cinturas (3 lambda y 5 lambda) sostienen cada una su ancho | ambas | §8 |
+| guarda | Delta eps_NL = chi3 max abs(E)^2 <= 0.1 | duro (levanta) | §5 |
+
+Presupuesto de error declarado a priori (§4, declarado, NO medido): 0.41 % Yee de
+2do orden + 0.23 % de fraccion del ancho + 0.1 % de cola en la esponja + 0.10 % no
+paraxial = 0.5 % total contra el umbral 2 % (margen x4).
+
+## 5. LO QUE ESTE MANIFIESTO DECLARA FALTANTE (no se omite, se declara)
+
+1. DIVERGENCIA con §7, declarada: §7 deriva `pasos = ceil(L_x/dt) = 6590` y ese
+   numero es el TRANSITO de la caja. Una fuente CW necesita que las estaciones
+   lejanas ASIENTEN, y §7 no fija el asentamiento. Se corre 6994 = 6590 + 404
+   (10 periodos). El transito sellado queda intacto como numero; lo que se anade
+   es asentamiento con su razon. No es mover un umbral: es declarar una eleccion
+   que el pre-registro no fijo.
+2. La ENVOLVENTE TEMPORAL no esta sellada en §7. ELEGIDA aqui y declarada: CW
+   con rampa de coseno alzado de 3 periodos, y luego amplitud constante. Razon:
+   el objeto es un soliton ESPACIAL estacionario; un pulso de duracion finita
+   anade una segunda escala de difraccion temporal que no es el objeto.
+3. La AMPLITUD del control positivo gaussiano no esta sellada en §4. ELEGIDA y
+   declarada: E_z = E0 exp(-(y/w0)^2), cuya sigma_y(0) = w0/2 = 2.5 y cuyo
+   z_R^sigma = k0 w0^2/2 = 25 pi, que es la forma EXACTA de Rayleigh. §4 solo
+   pide que el gaussiano reproduzca Rayleigh en su forma exacta.
+4. NO EJECUTADO en este ciclo (declarado, no adjudicado): P2 (la corrida del
+   objeto con chi3 = 1), P3 (borde de la cota), P4 (familia de dos cinturas), y
+   el observable co-medido de THG del §6. El §6 declara THG como observable a
+   co-medir, con una cota a priori O((Delta eps_NL)^2) = 4.1e-6 NO medida; se
+   queda como cota, no como medicion.
+5. `propagador_2d_te.py` NO importa `sfqed-paper/sim/params.py`: el objeto del
+   §3 vive en unidades naturales y con c = lambda = eps0 = mu0 = 1 las
+   constantes SI no entran en ninguna ecuacion. Los dos valores SI que el
+   archivo nombra (C_SI, EPS0_SI) son transcripcion de la casa
+   (`sim/params.py`, 133 l, 5 343 B, sha256-16 9983b3d25a68f032) y no se usan.
+   Declarado para que nadie lea una constante decorativa como una constante viva.
+6. El instrumento B del nulo tiene su PROPIO kernel Yee TE, no importado del
+   propagador. Es duplicacion deliberada: un nulo que comparte codigo con el
+   objeto que juzga no es un nulo. Declarado.
+7. Las cifras 240 ocurrencias / 39 lineas del signo monetario de la errata §11.d
+   no se reproducen aqui: este archivo no escribe ese signo ni una vez.
+
+## 6. Comandos de verificacion de este ciclo (los corre el cierre)
+
+    cd ~/optica-kerr-2d
+    bash tools/gate_pre_escritura.sh  (vive en ~/platino-labs/tools/, se invoca por ruta)
+    python3 -B nulo_lineal.py --json
+    python3 -B nulo_lineal.py --fdtd --perfil gauss --json
+    python3 -B nulo_lineal.py --fdtd --perfil sech --json
+    python3 -B propagador_2d_te.py --control-cfl
+    python3 -B propagador_2d_te.py --control-energia
+    git hash-object -- MANIFIESTO.txt nulo_lineal.py propagador_2d_te.py
+    shasum -a 256 MANIFIESTO.txt nulo_lineal.py propagador_2d_te.py
+    wc -l MANIFIESTO.txt nulo_lineal.py propagador_2d_te.py
+
+El gate A2.1 es el mismo instrumento con el que se abrio el turno; su RC por
+artefacto se imprime en el reporte de cierre, no aqui.
