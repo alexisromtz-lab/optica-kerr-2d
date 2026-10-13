@@ -1,0 +1,6 @@
+T_UTC_INICIO = 2026-10-13T02:12:15Z
+UNIVERSO DECLARADO: optica-kerr-2d | (1+1)D TE: propaga en x, confina en y, campo Ez | unidades naturales c=lambda=1, omega=k0=2 pi, eps0=mu0=1 | w0=5, E0=4.5015816e-2, chi3=1, Delta eps_NL=2.0264237e-3 <= 0.1 | malla sellada dx=dy=0.05 (NX=3262, NY=2000), esponja 60 celdas alfa=0.10, dt = CFL_2D dx/(c sqrt2) = 2.4748737342e-2 con CFL=0.70 < 1/sqrt2=0.7071068 | fuente CW en la columna 60 con rampa de 3 periodos | pasos = 6590 transito + 404 asentamiento = 6994 | MOTOR = python3 -B + numpy | UNIDAD = celda/linea
+MOTOR = python3 -B + numpy 2.4.6 ; UNIDAD = celda / linea / byte
+  control de energia: deriva global 1.5687e-01  peor par 1.1693e-01  (umbral 1e-9)
+  veredicto: ROJO
+escrito: /Users/marlene/optica-kerr-2d/data/propagador_control_energia.json
