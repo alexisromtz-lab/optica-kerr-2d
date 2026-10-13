@@ -172,3 +172,35 @@ Regla que el candidato respeta y que aqui se vuelve a imprimir: **un mapeo exige
 Una identidad impresa **dentro** de la pieza describe su version **anterior**. Por eso las lineas, los bytes, el sha16, el blob y el hash de commit de esta acta se miden **en la terminal, despues de escribirla**, y se imprimen en el cierre del ciclo - no aqui.
 
 Estado de identidad que si se declara en la pieza, porque estaba medido **antes** de escribirla (`05:31:43Z`): el motor en disco es **igual** a HEAD (`c103ef6c218414a5e1980a30aa24489b938de557`), y `git status --porcelain` daba **10 entradas, todas `??`, cero modificadas** (`05:30:08Z`). El commit atomico de este ciclo debe llevar el arbol a `sucios = 0` **sin** tocar el motor.
+
+## 14. APENDICE: IDENTIDAD COMPLETA DE LOS CINCO LOGS Y CUSTODIA DEL COMMIT
+
+**Declaracion de hueco de esta acta.** La tabla de 3 se escribio a las 05:33Z y lista **siete** piezas. El ciclo produjo ademas **tres** logs que en ese instante no aparecian en el arbol de trabajo: los de la corrida del invariante y del barrido. Una verificacion posterior (`git status --porcelain -uall`, 15 entradas) los expuso. Se declaran aqui; la tabla de 3 **no se parchea** (append-only): queda como la foto de las 05:33Z.
+
+| pieza | bytes | lineas | mtime | sha256 |
+|---|---|---|---|---|
+| `data/logs/p2_barrido_dt.log` | 2919 | 36 | Oct 13 03:45 | `81b48fcae23ecf037ce8664b8a7a44d28ee208620b3d7d0ce7540694f76b294c` |
+| `data/logs/p2_control_energia.log` | 795 | 6 | Oct 13 02:20 | `005db2d0d8b8c36b7fc27fa37c25549ef6debd7a56a5fa47693b0db10b776172` |
+| `data/logs/p2_invariante.log` | 2411 | 28 | Oct 13 03:02 | `91e4646a1514a600520f069fd4304c43a2ae855dd7e50ff898bea06963185b46` |
+
+Con los dos de la tabla de 3 (`p2_nulo.log` 1184 B, `p2_objeto.log` 1179 B) el ciclo produjo **cinco** logs. La tabla de 3 cubria los **objetos** del ciclo; este apendice cubre su **testimonio de consola**.
+
+**Correccion de precision sobre 2 (se cita, no se edita).** El renglon de 2 dice que `RC_BARRIDO = 0` (03:45:27Z) fue impreso "por la terminal que lanzo los procesos, **no** por el crudo". Medido ahora: `data/logs/p2_barrido_dt.log` **si lleva el RC adentro**; sus dos ultimas lineas son `RC_BARRIDO=0` y `T_UTC_CIERRE_BARRIDO=2026-10-13T03:45:27Z`. Lo que 2 afirma sigue siendo cierto **de los dos corridos pesados** (ni `propagador_objeto.json` ni `propagador_nulo_lineal.json` llevan RC); lo que queda impreciso es generalizarlo a la reserva. **El log del barrido es testigo de su propio RC; el crudo pesado no lo es.** Y el mismo barrido si imprime su cierre: `T_UTC_DISPARO_BARRIDO=2026-10-13T03:13:21Z` en la primera linea.
+
+**Custodia: el commit atomico.**
+
+| campo | valor |
+|---|---|
+| commit | `3da7b009510e7ee782f16edacfaf8a80c24a976d` |
+| archivos en el commit | 15 |
+| motor en `70b3fc4` | `c103ef6c218414a5e1980a30aa24489b938de557` |
+| motor en `HEAD` | `c103ef6c218414a5e1980a30aa24489b938de557` |
+| motor en disco | `c103ef6c218414a5e1980a30aa24489b938de557` |
+| `git status --porcelain -uall` | vacio (`SUCIOS = 0`) |
+| `T_UTC_CIERRE` | 2026-10-13T05:37:21Z |
+
+Las tres filas del motor son **el mismo blob**: `git rev-parse 70b3fc4:propagador_2d_te.py`, `git rev-parse HEAD:propagador_2d_te.py` y `git hash-object propagador_2d_te.py`. El commit no toca el propagador. Los blobs sellados tampoco se movieron: `nulo_lineal.py` `69f94564db2e61891dda59a9ef666f0c856d8587`, `MANIFIESTO.txt` `d218de6b25c5c186e75ae056fdfe79503b60c8af`, preregistro `45fa6e96b707bd5c780cb3b9e160ac94a3be2a91`, addenda de analisis `25fc8f04a5610b4040804bdd153a95da5110a413`, addenda de invariante `08cc54ec20863cd39c7369aed0f27a413d4f67c1`.
+
+**Decision declarada (la unica escritura fuera de "acta y crudos").** El arbol estaba en 15 entradas: las 14 piezas del ciclo **mas** `__pycache__/control_energia_invariante.cpython-314.pyc` (16K), artefacto de build de mi propio instrumento. No existia `.gitignore` (`GITIGNORE_EXISTE=NO`, medido 05:37Z). Para que el arbol regrese a `SUCIOS = 0` **y se quede ahi**, se hicieron dos actos, ambos declarados: (i) `rm -rf __pycache__`, que borra el artefacto, no el instrumento; y (ii) creacion de `.gitignore` (19 B, blob `7a60b85e148f80966a550e5ab6a762a907c69ca6`) con dos lineas: `__pycache__/` y `*.pyc`. El `.gitignore` **entra al commit**. Sin (ii) el primer `import` de cualquier corrida futura devuelve el arbol a sucio; con (ii) la invariante "arbol limpio" deja de ser una foto y pasa a ser un estado.
+
+**Lo que este commit NO hace.** No toca el motor. No ejecuta P3, ni P4, ni `control_cfl`, ni el observador de THG. No adjudica la causa candidata de 11. No recalibra la constante sellada. No convierte en VERDE el ROJO de A1 ni el ROJO del control de energia.
