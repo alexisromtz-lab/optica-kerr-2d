@@ -1,2 +1,3 @@
-python .github/verify_manifest.py && python -m pytest -q
+python .github/verify_manifest.py && python -m pytest -q -p no:cacheprovider
 # HUELLA-OPTICA-CI-APPARATUS-MANIFIESTO-MAS-PYTEST-20261020
+# HUELLA-OPTICA-CI-APPARATUS-NO-CACHE-20261020
