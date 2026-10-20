@@ -1,1 +1,2 @@
-python .github/verify_manifest.py
+python .github/verify_manifest.py && python -m pytest -q
+# HUELLA-OPTICA-CI-APPARATUS-MANIFIESTO-MAS-PYTEST-20261020
