@@ -1,0 +1,25 @@
+{
+  "huella": "HUELLA-CLAIMS-OPTICA-KERR-2D-20261020",
+  "repo": "optica-kerr-2d",
+  "clase": "A",
+  "claims": [
+    {
+      "id": "A1_residuo_plano",
+      "afirma": "13.11 %",
+      "dato": "data/propagador_objeto.json",
+      "deriva": "dato.medido.residuo_plano_max * 100",
+      "polaridad": "cerca_de",
+      "tolerancia": 0.005,
+      "prosa": "README.md"
+    },
+    {
+      "id": "N1_residuo_nulo_fdtd",
+      "afirma": "4.5680e-03",
+      "dato": "data/nulo_lineal_sech_fdtd.json",
+      "deriva": "dato.B_fdtd.residuo_max",
+      "polaridad": "cerca_de",
+      "tolerancia": 1e-06,
+      "prosa": "README.md"
+    }
+  ]
+}
