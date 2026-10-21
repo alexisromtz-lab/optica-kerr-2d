@@ -1,4 +1,5 @@
 # HUELLA-EJECUTOR-PROPAGADOR-TE-OPTICA-20261021
+# HUELLA-CORRECCION-EXPECTATIVA-PASO-TE-20261021
 """Ejecutor directo de los contratos locales del paso Yee TE."""
 
 from __future__ import annotations
@@ -31,7 +32,7 @@ def test_paso_aplica_el_stencil_yee_con_signo_y_magnitud():
     assert resultado is campos
     assert math.isclose(campos["Hx"][1, 2], dt / motor.DX, abs_tol=1e-12)
     assert math.isclose(campos["Hy"][1, 2], -dt / motor.DX, abs_tol=1e-12)
-    esperado_ez = 1.0 - 3.0 * (dt / motor.DX) ** 2
+    esperado_ez = 1.0 - 4.0 * (dt / motor.DX) ** 2
     assert math.isclose(campos["Ez"][1, 2], esperado_ez, abs_tol=1e-12)
 
 
