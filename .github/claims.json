@@ -2,6 +2,10 @@
   "huella": "HUELLA-CLAIMS-OPTICA-KERR-2D-20261020",
   "repo": "optica-kerr-2d",
   "clase": "A",
+  "datos": {
+    "data/nulo_lineal_sech_fdtd.json": "f845939b1de26b5a",
+    "data/propagador_objeto.json": "aff2d59f04ebe3ef"
+  },
   "claims": [
     {
       "id": "A1_residuo_plano",
